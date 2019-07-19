@@ -1,0 +1,39 @@
+Learning and mini project progress : Creating a weather app with React JS 
+
+Features : 
+    User input on city
+    Showing 5 day forecast informations:
+        Weather
+        date
+        Icon
+        Temperature
+        .
+        .
+        .
+        ( will be added )
+
+
+14 July 2019
+    Learn : 
+        Watching some tutorials
+
+    Project : 
+        Setting a boilerplate for the app with npx command
+        Implementing JSX on main component
+        Accessing attributes on other component with props
+
+19 July 2019
+    Learn : 
+        Understanding components and props
+        Getting started to State management 
+        Working on openweather API with React
+
+    Project : 
+        Split date information from API so it can get datas for the next day
+        Created function to generalize data processing
+        Made object that its values are acquired from API 
+
+
+
+    
+
