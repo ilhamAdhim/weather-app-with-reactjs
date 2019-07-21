@@ -33,7 +33,16 @@ Features :
         Created function to generalize data processing
         Made object that its values are acquired from API 
 
+21 July 2019
+    Learn : -
 
+    Project : 
+        Created dynamic search with manipulating State >>
+        Data Flow : 
+            1. Default value of city is 'Malang'
+            2. User input the value in search bar, this will update the setSearch to the inputted value
+            3. User click the button, this will update the setCity
+            4. Change the default value of city 
 
     
 
