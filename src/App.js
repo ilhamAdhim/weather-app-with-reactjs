@@ -3,9 +3,7 @@ import './App.css';
 import City from './City'
 
 function App() {
-
-
-	let APP_ID = 'b4f8399cb8eeb31e0a395d99e6478e6f';
+	const APP_ID = 'b4f8399cb8eeb31e0a395d99e6478e6f';
 	const [info, setInfos] = useState([])
 	const [search, setSearch] = useState('')
 	const [city, setCity] = useState('Malang')
@@ -72,25 +70,22 @@ function App() {
 	const getWeatherData = async () => {
 		const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${APP_ID}`);
 		const dataAPI = await response.json();
-		console.log(dataAPI);
-
 		let rawInfos = []
 		if (dataAPI.message === "city not found") {
 			console.log("City not found")
 		}
 		else {
+			console.log("New city : " + city + ". Here is the API Response :")
+			console.log(dataAPI);
 			for (let index = 0; index < dataAPI.list.length; index += 8) {
 				const day = splitTimeFromAPI(dataAPI, index, 'dd');
 				const month = splitTimeFromAPI(dataAPI, index, 'mm');
 				const year = splitTimeFromAPI(dataAPI, index, 'yy');
-
 				//Change data API to fix with custom js object  
 				updateData(dataAPI, index, day, month, year);
 				rawInfos.push(data)
 			}
-
 		}
-
 		setInfos(rawInfos)
 	};
 
@@ -101,7 +96,6 @@ function App() {
 
 	return (
 		<div className="App" >
-
 			<form className="search-form" onSubmit={getSearch}>
 				<input type="text" placeholder="City name or Zipcode" value={search} onChange={updateSearch} />
 				<button className="btn btn-info" type="submit">
