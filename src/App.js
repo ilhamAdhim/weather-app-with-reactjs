@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import './App.css'
 import City from './City'
 
 function App() {
-	const APP_ID = 'b4f8399cb8eeb31e0a395d99e6478e6f';
+	const APP_ID = 'b4f8399cb8eeb31e0a395d99e6478e6f'
 	const [info, setInfos] = useState([])
 	const [search, setSearch] = useState('')
 	const [city, setCity] = useState('Malang')
@@ -21,7 +21,7 @@ function App() {
 			description: undefined,
 			icon: undefined,
 		},
-		temp: undefined,
+		temp: 0,
 		humidity: undefined,
 		windspeed: undefined,
 	}
@@ -44,23 +44,20 @@ function App() {
 			temp: dataAPI.list[index].main.temp,
 			humidity: dataAPI.list[index].main.humidity,
 			windspeed: dataAPI.list[index].wind.speed,
-		};
+		}
 	}
 
 	function splitTimeFromAPI(data, index, units) {
-		const str = data.list[index].dt_txt;
-		const completeDays = str.split(" ", 2)[0];
-		const dates = completeDays.split("-");
+		const str = data.list[index].dt_txt
+		const completeDays = str.split(" ", 2)[0]
+		const dates = completeDays.split("-")
 
 		const result = (units === "dd") ? dates[2] : (units === "mm") ? dates[1] : dates[0]
-		return result;
+		return result
 	}
 
 
-	const updateSearch = e => {
-		setSearch(e.target.value)
-	}
-
+	const updateSearch = e => setSearch(e.target.value)
 
 	const getSearch = e => {
 		e.preventDefault()
@@ -68,30 +65,36 @@ function App() {
 	}
 
 	const getWeatherData = async () => {
-		const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${APP_ID}`);
-		const dataAPI = await response.json();
+		const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${city}&APPID=${APP_ID}`)
+		const dataAPI = await response.json()
 		let rawInfos = []
 		if (dataAPI.message === "city not found") {
 			console.log("City not found")
 		}
 		else {
 			console.log("New city : " + city + ". Here is the API Response :")
-			console.log(dataAPI);
+			console.log(dataAPI)
 			for (let index = 0; index < dataAPI.list.length; index += 8) {
-				const day = splitTimeFromAPI(dataAPI, index, 'dd');
-				const month = splitTimeFromAPI(dataAPI, index, 'mm');
-				const year = splitTimeFromAPI(dataAPI, index, 'yy');
+				const day = splitTimeFromAPI(dataAPI, index, 'dd')
+				const month = splitTimeFromAPI(dataAPI, index, 'mm')
+				const year = splitTimeFromAPI(dataAPI, index, 'yy')
 				//Change data API to fix with custom js object  
-				updateData(dataAPI, index, day, month, year);
+				updateData(dataAPI, index, day, month, year)
 				rawInfos.push(data)
 			}
+			console.log(rawInfos)
+			//Calculate average temperature
+			const avgTemp = countAvg(rawInfos)
+			console.log("Average temperature is : " + avgTemp)
+
 		}
 		setInfos(rawInfos)
-	};
+	}
 
+	//Get weather data when the city changes
 	useEffect(() => {
-		getWeatherData();
-	}, [city]);
+		getWeatherData()
+	}, [city])
 
 
 	return (
@@ -112,7 +115,14 @@ function App() {
 					weather={info.weather.main}
 					temp={info.temp - 273} />
 			))}
-		</div>);
+		</div>)
 }
 
-export default App;
+export default App
+
+function countAvg(rawInfos) {
+	let totalTemp = 0
+	for (let index = 0; index < rawInfos.length; index++)
+		totalTemp += (rawInfos[index].temp - 273)
+	return (totalTemp / rawInfos.length).toPrecision(3)
+}
