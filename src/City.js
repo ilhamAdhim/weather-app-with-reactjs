@@ -4,7 +4,7 @@ const City = (props) => {
     return (
         <div>
             <p>
-                Date : {props.date}                     <br />
+                Date : {props.date} <br />
                 Weather : {props.weather} <br />
                 Temperature : {props.temp.toPrecision(2)} Celcius
             </p>
