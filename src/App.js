@@ -11,6 +11,7 @@ function App() {
 	let data = {
 		key: undefined,
 		date: undefined,
+		day: undefined,
 		specificDate: {
 			dd: undefined,
 			mm: undefined,
@@ -27,10 +28,11 @@ function App() {
 	}
 
 
-	function updateData(dataAPI, index, day, month, year) {
+	const updateData = (dataAPI, index, day, month, year, dayName) => {
 		data = {
 			key: dataAPI.list[index].dt,
 			date: dataAPI.list[index].dt_txt.split(" ")[0],
+			day: dayName,
 			specificDate: {
 				dd: day,
 				mm: month,
@@ -39,7 +41,7 @@ function App() {
 			weather: {
 				main: dataAPI.list[index].weather[0].main,
 				description: dataAPI.list[index].weather[0].description,
-				icon: dataAPI.list[index].weather[0].icon,
+				icon: "http://openweathermap.org/img/wn/" + dataAPI.list[index].weather[0].icon + ".png"
 			},
 			temp: dataAPI.list[index].main.temp,
 			humidity: dataAPI.list[index].main.humidity,
@@ -47,7 +49,7 @@ function App() {
 		}
 	}
 
-	function splitTimeFromAPI(data, index, units) {
+	const splitTimeFromAPI = (data, index, units) => {
 		const str = data.list[index].dt_txt
 		const completeDays = str.split(" ", 2)[0]
 		const dates = completeDays.split("-")
@@ -55,7 +57,6 @@ function App() {
 		const result = (units === "dd") ? dates[2] : (units === "mm") ? dates[1] : dates[0]
 		return result
 	}
-
 
 	const updateSearch = e => setSearch(e.target.value)
 
@@ -78,13 +79,17 @@ function App() {
 				const day = splitTimeFromAPI(dataAPI, index, 'dd')
 				const month = splitTimeFromAPI(dataAPI, index, 'mm')
 				const year = splitTimeFromAPI(dataAPI, index, 'yy')
+
+				//Get name of the day from the date
+				const dayName = getDayName(dataAPI, index);
+
 				//Change data API to fix with custom js object  
-				updateData(dataAPI, index, day, month, year)
+				updateData(dataAPI, index, day, month, year, dayName)
 				rawInfos.push(data)
 			}
 			console.log(rawInfos)
 			//Calculate average temperature
-			const avgTemp = countAvg(rawInfos)
+			const avgTemp = countAvgTemp(rawInfos)
 			console.log("Average temperature is : " + avgTemp)
 
 		}
@@ -95,7 +100,6 @@ function App() {
 	useEffect(() => {
 		getWeatherData()
 	}, [city])
-
 
 	return (
 		<div className="App" >
@@ -109,18 +113,30 @@ function App() {
 			<h1 > Weather in: {city}
 			</h1>
 			<br />
-			{info.map(info => (
-				<City key={info.key}
-					date={info.date}
-					weather={info.weather.main}
-					temp={info.temp - 273} />
-			))}
+			<div className="weather-data">
+				{info.map(info => (
+					<City key={info.key}
+						day={info.day}
+						weather={info.weather.main}
+						temp={info.temp - 273}
+						icon={info.weather.icon} />
+				))}
+			</div>
 		</div>)
 }
 
 export default App
 
-function countAvg(rawInfos) {
+const getDayName = (dataAPI, index) => {
+	//new date object to convert dates to day
+	const daysList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	const indexDay = new Date(dataAPI.list[index].dt_txt.split(" ")[0]);
+	const dayName = daysList[indexDay.getDay()];
+	return dayName;
+}
+
+
+const countAvgTemp = (rawInfos) => {
 	let totalTemp = 0
 	for (let index = 0; index < rawInfos.length; index++)
 		totalTemp += (rawInfos[index].temp - 273)
