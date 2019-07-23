@@ -3,6 +3,7 @@ import './App.css'
 import City from './City'
 
 function App() {
+	//api maps = 'AIzaSyAaABgMDroWExxmgTisjMtPLlnnVUh9a2A'
 	const APP_ID = 'b4f8399cb8eeb31e0a395d99e6478e6f'
 	const [info, setInfos] = useState([])
 	const [search, setSearch] = useState('')
@@ -12,11 +13,7 @@ function App() {
 		key: undefined,
 		date: undefined,
 		day: undefined,
-		specificDate: {
-			dd: undefined,
-			mm: undefined,
-			yy: undefined,
-		},
+
 		weather: {
 			main: undefined,
 			description: undefined,
@@ -27,17 +24,12 @@ function App() {
 		windspeed: undefined,
 	}
 
-
-	const updateData = (dataAPI, index, day, month, year, dayName) => {
+	const updateData = (dataAPI, index, dayName) => {
 		data = {
 			key: dataAPI.list[index].dt,
 			date: dataAPI.list[index].dt_txt.split(" ")[0],
 			day: dayName,
-			specificDate: {
-				dd: day,
-				mm: month,
-				yy: year
-			},
+
 			weather: {
 				main: dataAPI.list[index].weather[0].main,
 				description: dataAPI.list[index].weather[0].description,
@@ -47,15 +39,6 @@ function App() {
 			humidity: dataAPI.list[index].main.humidity,
 			windspeed: dataAPI.list[index].wind.speed,
 		}
-	}
-
-	const splitTimeFromAPI = (data, index, units) => {
-		const str = data.list[index].dt_txt
-		const completeDays = str.split(" ", 2)[0]
-		const dates = completeDays.split("-")
-
-		const result = (units === "dd") ? dates[2] : (units === "mm") ? dates[1] : dates[0]
-		return result
 	}
 
 	const updateSearch = e => setSearch(e.target.value)
@@ -76,15 +59,13 @@ function App() {
 			console.log("New city : " + city + ". Here is the API Response :")
 			console.log(dataAPI)
 			for (let index = 0; index < dataAPI.list.length; index += 8) {
-				const day = splitTimeFromAPI(dataAPI, index, 'dd')
-				const month = splitTimeFromAPI(dataAPI, index, 'mm')
-				const year = splitTimeFromAPI(dataAPI, index, 'yy')
+
 
 				//Get name of the day from the date
 				const dayName = getDayName(dataAPI, index);
 
 				//Change data API to fix with custom js object  
-				updateData(dataAPI, index, day, month, year, dayName)
+				updateData(dataAPI, index, dayName)
 				rawInfos.push(data)
 			}
 			console.log(rawInfos)
@@ -99,6 +80,7 @@ function App() {
 	//Get weather data when the city changes
 	useEffect(() => {
 		getWeatherData()
+		//eslint-disable-next-line
 	}, [city])
 
 	return (
@@ -113,14 +95,16 @@ function App() {
 			<h1 > Weather in: {city}
 			</h1>
 			<br />
-			<div className="weather-data">
-				{info.map(info => (
-					<City key={info.key}
-						day={info.day}
-						weather={info.weather.main}
-						temp={info.temp - 273}
-						icon={info.weather.icon} />
-				))}
+			<div className="container h-100">
+				<div className="weather-data d-flex">
+					{info.map(info => (
+						<City key={info.key}
+							day={info.day}
+							weather={info.weather.main}
+							temp={info.temp - 273}
+							icon={info.weather.icon} />
+					))}
+				</div>
 			</div>
 		</div>)
 }
