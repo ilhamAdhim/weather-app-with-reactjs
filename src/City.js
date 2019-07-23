@@ -2,12 +2,13 @@ import React from 'react'
 
 const City = (props) => {
     return (
-        <div>
+        <div className="col-3">
             <p>
-                Date : {props.date} <br />
-                Weather : {props.weather} <br />
-                Temperature : {props.temp.toPrecision(2)} Celcius
+                {props.day} <br />
+                {props.weather} <br />
+                {props.temp.toPrecision(3)} <span>&#176;</span>C
             </p>
+            <img src={props.icon} alt="{props.weather}" />
 
         </div>
     )
