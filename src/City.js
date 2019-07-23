@@ -2,7 +2,7 @@ import React from 'react'
 
 const City = (props) => {
     return (
-        <div className="col-3">
+        <div className="col-sm">
             <p>
                 {props.day} <br />
                 {props.weather} <br />
