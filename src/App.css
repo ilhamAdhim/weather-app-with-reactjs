@@ -1,5 +1,8 @@
-.App {
+.App,
+body {
   text-align: center;
+  color: aliceblue;
+  background-color: rgb(63, 58, 58);
 }
 
 .App-logo {
@@ -8,15 +11,9 @@
   pointer-events: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.weather-data {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
 }
 
 .App-link {
